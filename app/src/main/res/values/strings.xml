@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">News App</string>
+    <string name="webTitle">Web Title</string>
+    <string name="title_missing">No Web Title Available</string>
+    <string name="section_name">Section Name</string>
+    <string name="section_name_missing">Section Name Not Found</string>
 </resources>
