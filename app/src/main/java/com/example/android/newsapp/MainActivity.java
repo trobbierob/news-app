@@ -72,8 +72,9 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             if (activeNetwork != null) { // connected to the internet
-                newsList.clear();
+
                 DisplayURLText();
+                newsList.clear();
                 new GuardianQueryTask().execute();
             } else { // not connected to the internet
                 Toast.makeText(getBaseContext(), "Check Connection",
@@ -92,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
         mUrlDisplayTextView.setText(githubSearchUrl.toString());
     }
 
+
     public class GuardianQueryTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected void onPreExecute() {
             mLoadingIndicator.setVisibility(View.VISIBLE);
             String userQuery = mSearchEditText.getText().toString();
-            Log.v(LOG_TAG, "userQuery is: " + userQuery);
 
             if (userQuery.equals(null) || userQuery.equals("")){
                 mEmptyView.setVisibility(View.VISIBLE);
@@ -107,8 +108,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 mEmptyView.setVisibility(View.INVISIBLE);
                 listView.setVisibility(View.VISIBLE);
-                //guardianQueryUrl = NetworkUtils.buildURL("");
-                Log.v(LOG_TAG, "userQuery is: " + userQuery);
                 guardianQueryUrl = NetworkUtils.buildURL(userQuery);
             }
         }
@@ -119,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     jsonString = NetworkUtils.getResponseFromHttpUrl(guardianQueryUrl);
                     JSONObject jsonNewsRootObject = new JSONObject(jsonString);
+                    Log.v(LOG_TAG, "jsonrootObject is: " + jsonNewsRootObject);
                     JSONObject responseObject = jsonNewsRootObject.optJSONObject("response");
                     Log.v(LOG_TAG, "Response Object is: " + responseObject);
                     JSONArray resultsArray = responseObject.optJSONArray("results");
@@ -127,7 +127,13 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < resultsArray.length(); i++) {
                         JSONObject jsonObject = resultsArray.getJSONObject(i);
                         Log.v(LOG_TAG, "jsonObject is: " + jsonObject);
-                        webTitle = jsonObject.getString("webTitle");
+
+                        if (jsonObject.has("webTitle")){
+                            webTitle = jsonObject.optString("webTitle");
+                        } else {
+                            webTitle = getString(R.string.title_missing);
+                        }
+
                         Log.v(LOG_TAG, "webTitle is: " + webTitle);
 
                         HashMap<String, String> newsArticle = new HashMap<>();
@@ -150,12 +156,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (!newsList.equals(null)) {
+            if (newsList != null) {
                 Log.v(LOG_TAG, "newsList is: " + newsList);
                 ListAdapter adapter = new SimpleAdapter(MainActivity.this, newsList,
-                        R.layout.list_item, new String[]{getString(R.string.webTitle),
-                        getString(R.string.section_name)},
-                        new int[]{R.id.webTitle, R.id.section_name});
+                        R.layout.list_item, new String[]{getString(R.string.webTitle)},
+                        new int[]{R.id.webTitle});
                 listView.setAdapter(adapter);
             } else {
                 listView.setEmptyView(findViewById(R.id.empty));
