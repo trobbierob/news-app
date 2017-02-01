@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mUrlDisplayTextView;
     private TextView mSearchResultsTextView;
     private SearchView mSearchView;
-
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private ProgressBar mLoadingIndicator;
     private String webTitle;
@@ -93,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         mUrlDisplayTextView.setText(githubSearchUrl.toString());
     }
 
-
     public class GuardianQueryTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -138,8 +136,9 @@ public class MainActivity extends AppCompatActivity {
 
                         HashMap<String, String> newsArticle = new HashMap<>();
 
-                        newsArticle.put("webTitle", webTitle);
+                        newsArticle.put(getString(R.string.webTitle), webTitle);
                         newsList.add(newsArticle);
+                        //webTitle = "";
                     }
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "IOException at " + e);
