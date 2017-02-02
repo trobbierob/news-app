@@ -1,6 +1,5 @@
 package com.example.android.newsapp;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -75,9 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
                 DisplayURLText();
                 newsList.clear();
-                //new GuardianQueryTask().execute();
-                //LoaderManager loaderManager = getLoaderManager();
-                //loaderManager.initLoader(0, null, this);
+                new GuardianQueryTask().execute();
             } else { // not connected to the internet
                 Toast.makeText(getBaseContext(), "Check Connection",
                         Toast.LENGTH_SHORT).show();
@@ -93,59 +90,6 @@ public class MainActivity extends AppCompatActivity {
         String githubQuery = mSearchEditText.getText().toString();
         URL githubSearchUrl = NetworkUtils.buildURL(githubQuery);
         mUrlDisplayTextView.setText(githubSearchUrl.toString());
-    }
-
-    public class GuardianQueryTaskLoader extends AsyncTaskLoader<Void>{
-
-        public GuardianQueryTaskLoader(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onStartLoading() {
-
-        }
-
-        @Override
-        public Void loadInBackground() {
-            if (guardianQueryUrl != null) {
-                try {
-                    jsonString = NetworkUtils.getResponseFromHttpUrl(guardianQueryUrl);
-                    JSONObject jsonNewsRootObject = new JSONObject(jsonString);
-                    Log.v(LOG_TAG, "jsonrootObject is: " + jsonNewsRootObject);
-                    JSONObject responseObject = jsonNewsRootObject.optJSONObject("response");
-                    Log.v(LOG_TAG, "Response Object is: " + responseObject);
-                    JSONArray resultsArray = responseObject.optJSONArray("results");
-                    Log.v(LOG_TAG, "Results Array is: " + resultsArray);
-
-                    for (int i = 0; i < resultsArray.length(); i++) {
-                        JSONObject jsonObject = resultsArray.getJSONObject(i);
-                        Log.v(LOG_TAG, "jsonObject is: " + jsonObject);
-
-                        if (jsonObject.has("webTitle")){
-                            webTitle = jsonObject.optString("webTitle");
-                        } else {
-                            webTitle = getString(R.string.title_missing);
-                        }
-
-                        Log.v(LOG_TAG, "webTitle is: " + webTitle);
-
-                        HashMap<String, String> newsArticle = new HashMap<>();
-
-                        newsArticle.put(getString(R.string.webTitle), webTitle);
-                        newsList.add(newsArticle);
-                    }
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "IOException at " + e);
-                } catch (JSONException e) {
-                    Log.e(LOG_TAG, "JSONException at " + e);
-                }
-
-            } else {
-                Log.e(LOG_TAG, "JSON Server Error");
-            }
-            return null;
-        }
     }
 
     public class GuardianQueryTask extends AsyncTask<Void, Void, Void> {
