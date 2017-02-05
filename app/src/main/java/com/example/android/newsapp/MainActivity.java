@@ -60,6 +60,11 @@ public class MainActivity extends AppCompatActivity implements
         mEmptyView = (TextView) findViewById(R.id.empty);
         listView = (ListView) findViewById(R.id.list);
         getSupportLoaderManager().initLoader(NEWS_SEARCH_LOADER, null, this);
+
+        if (savedInstanceState != null) {
+            String search = savedInstanceState.getString(SEARCH_QUERY);
+            mUrlDisplayTextView.setText(search);
+        }
     }
 
     private void Activate() {
@@ -196,5 +201,12 @@ public class MainActivity extends AppCompatActivity implements
         String githubQuery = mSearchEditText.getText().toString();
         URL githubSearchUrl = NetworkUtils.buildURL(githubQuery);
         mUrlDisplayTextView.setText(githubSearchUrl.toString());
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String search = mUrlDisplayTextView.getText().toString();
+        outState.putString(SEARCH_QUERY, search);
     }
 }
