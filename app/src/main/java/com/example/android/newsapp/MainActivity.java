@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -155,6 +156,19 @@ public class MainActivity extends AppCompatActivity implements
                     R.layout.list_item, new String[]{getString(R.string.webTitle)},
                     new int[]{R.id.webTitle});
             listView.setAdapter(adapter);
+            //ClickDat();
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //Toast.makeText(MainActivity.this, i, Toast.LENGTH_SHORT).show();
+                    int position = listView.getPositionForView(view);
+                    Log.v(LOG_TAG, "Position is " + position);
+                    Toast.makeText(getBaseContext(), "Position is " + position,
+                    Toast.LENGTH_SHORT).show();
+                }
+            });
+
         } else {
             listView.setEmptyView(findViewById(R.id.empty));
         }
@@ -198,5 +212,4 @@ public class MainActivity extends AppCompatActivity implements
         URL githubSearchUrl = NetworkUtils.buildURL(githubQuery);
         mUrlDisplayTextView.setText(githubSearchUrl.toString());
     }
-
 }
