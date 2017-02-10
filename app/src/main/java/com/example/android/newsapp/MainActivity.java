@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private ProgressBar mLoadingIndicator;
     private String webTitle;
+    private JSONArray resultsArray;
     private TextView mEmptyView;
     public String jsonString;
     public URL guardianQueryUrl;
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
                         Log.v(LOG_TAG, "jsonrootObject is: " + jsonNewsRootObject);
                         JSONObject responseObject = jsonNewsRootObject.optJSONObject("response");
                         Log.v(LOG_TAG, "Response Object is: " + responseObject);
-                        JSONArray resultsArray = responseObject.optJSONArray("results");
+                        resultsArray = responseObject.optJSONArray("results");
                         Log.v(LOG_TAG, "Results Array is: " + resultsArray);
 
                         for (int i = 0; i < resultsArray.length(); i++) {
@@ -169,8 +170,39 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(getBaseContext(), "Position is " + position,
                     Toast.LENGTH_SHORT).show();
 
+                    String website = "";
 
+                    /*
+                        TODO 001 We only need to parse once.
+                        Make this chunk of code work in the background so that the search
+                        doesn't take as long.
+                        TODO 002 Make it so that the correct url is selected
+                        when the list item is clicked, currently is off by one - skipping 0
+                     */
+                    if (position >= 0) {
+                        try {
+                            for (int j = 0; j < position; j++) {
+                                JSONObject jsonObject = resultsArray.getJSONObject(j);
+                                Log.v(LOG_TAG, "jsonObject is: " + jsonObject);
 
+                                if (jsonObject.has("webUrl")){
+                                    website = jsonObject.optString("webUrl");
+                                } else {
+                                    website = "https://codex.wordpress.org/Creating_an_Error_404_Page";
+                                }
+                                Log.v(LOG_TAG, "website is: " + website);
+                            }
+
+                            Log.v(LOG_TAG, "Website is: " + website);
+                            openUrl(website);
+
+                        } catch (JSONException e) {
+                            Log.e(LOG_TAG, "JSONException at " + e);
+                        }
+
+                    } else {
+                        Log.e(LOG_TAG, "JSON Server Error");
+                    }
                 }
             });
 
@@ -181,13 +213,13 @@ public class MainActivity extends AppCompatActivity implements
 
     private void openUrl(String url) {
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
-
+        Uri webpage = Uri.parse(url);
+        Log.v(LOG_TAG, "URL is: " + url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
-
-
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
