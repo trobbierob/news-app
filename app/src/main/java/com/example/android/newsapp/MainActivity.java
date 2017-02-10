@@ -1,8 +1,10 @@
 package com.example.android.newsapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -166,6 +168,9 @@ public class MainActivity extends AppCompatActivity implements
                     Log.v(LOG_TAG, "Position is " + position);
                     Toast.makeText(getBaseContext(), "Position is " + position,
                     Toast.LENGTH_SHORT).show();
+
+
+
                 }
             });
 
@@ -173,6 +178,16 @@ public class MainActivity extends AppCompatActivity implements
             listView.setEmptyView(findViewById(R.id.empty));
         }
     }
+
+    private void openUrl(String url) {
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+
+    }
+
+
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
