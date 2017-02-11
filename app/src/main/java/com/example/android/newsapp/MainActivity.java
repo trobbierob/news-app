@@ -65,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements
         mEmptyView = (TextView) findViewById(R.id.empty);
         listView = (ListView) findViewById(R.id.list);
         getSupportLoaderManager().initLoader(NEWS_SEARCH_LOADER, null, this);
+        Log.v(LOG_TAG, "onCreate");
+
+
+
+
 
     }
 
@@ -93,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             loaderManager.restartLoader(NEWS_SEARCH_LOADER, bundle, MainActivity.this);
         }
+        Log.v(LOG_TAG, "Activate");
     }
 
     @Override
@@ -106,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 mLoadingIndicator.setVisibility(View.VISIBLE);
                 forceLoad();
+                Log.v(LOG_TAG, "onStartLoading");
             }
 
             @Override
@@ -146,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
                     Log.e(LOG_TAG, "JSON Server Error");
                 }
+                Log.v(LOG_TAG, "loadinBackground");
                 return null;
             }
         };
@@ -153,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
+        Log.v(LOG_TAG, "onFinished");
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if (newsList != null) {
             Log.v(LOG_TAG, "newsList is: " + newsList);
@@ -160,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements
                     R.layout.list_item, new String[]{getString(R.string.webTitle)},
                     new int[]{R.id.webTitle});
             listView.setAdapter(adapter);
-            //ClickDat();
+
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -200,6 +209,9 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
             });
+
+
+
 
         } else {
             listView.setEmptyView(findViewById(R.id.empty));
