@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<String>{
+        LoaderManager.LoaderCallbacks<String> {
 
     private EditText mSearchEditText;
     private TextView mUrlDisplayTextView;
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar mLoadingIndicator;
     private String webTitle;
     private JSONArray resultsArray;
+    private static final int BROWSER_LOADER = 2;
     private TextView mEmptyView;
     public String jsonString;
     public URL guardianQueryUrl;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
 
         String userQuery = mSearchEditText.getText().toString();
 
-        if (userQuery.equals(null) || userQuery.equals("")){
+        if (userQuery.equals(null) || userQuery.equals("")) {
             mEmptyView.setVisibility(View.VISIBLE);
             listView.setVisibility(View.INVISIBLE);
 
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements
                             JSONObject jsonObject = resultsArray.getJSONObject(i);
                             Log.v(LOG_TAG, "jsonObject is: " + jsonObject);
 
-                            if (jsonObject.has("webTitle")){
+                            if (jsonObject.has("webTitle")) {
                                 webTitle = jsonObject.optString("webTitle");
                             } else {
                                 webTitle = getString(R.string.title_missing);
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements
                     int position = listView.getPositionForView(view);
                     Log.v(LOG_TAG, "Position is " + position);
                     Toast.makeText(getBaseContext(), "Position is " + position,
-                    Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT).show();
 
                     String website = "";
 
@@ -176,24 +177,18 @@ public class MainActivity extends AppCompatActivity implements
                         TODO 001 We only need to parse once.
                         Make this chunk of code work in the background so that the search
                         doesn't take as long.
-                        TODO 002 Make it so that the correct url is selected
-                        when the list item is clicked, currently is off by one - skipping 0
                      */
                     if (position >= 0) {
                         try {
-                            for (int j = 0; j < position; j++) {
-                                JSONObject jsonObject = resultsArray.getJSONObject(j);
-                                Log.v(LOG_TAG, "jsonObject is: " + jsonObject);
 
-                                if (jsonObject.has("webUrl")){
-                                    website = jsonObject.optString("webUrl");
-                                } else {
-                                    website = "https://codex.wordpress.org/Creating_an_Error_404_Page";
-                                }
-                                Log.v(LOG_TAG, "website is: " + website);
+                            JSONObject jsonObject = resultsArray.getJSONObject(position);
+
+                            if (jsonObject.has("webUrl")) {
+                                website = jsonObject.optString("webUrl");
+                            } else {
+                                website = "https://codex.wordpress.org/Creating_an_Error_404_Page";
                             }
-
-                            Log.v(LOG_TAG, "Website is: " + website);
+                            Log.v(LOG_TAG, "website is: " + website);
                             openUrl(website);
 
                         } catch (JSONException e) {
