@@ -11,24 +11,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.android.newsapp.MainActivity">
 
-    <SearchView
-        android:id="@+id/searchview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <EditText
         android:id="@+id/editText_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter subject here"
+        android:hint="Look for an article here"
         android:paddingBottom="16dp"
         android:textSize="25sp" />
-
-    <TextView
-        android:id="@+id/url_display_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="This is the URL"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -43,7 +32,7 @@
             android:id="@+id/empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Empty"
+            android:text=""
             android:layout_gravity="center_horizontal"
             android:textSize="22sp"
             android:visibility="visible"/>
