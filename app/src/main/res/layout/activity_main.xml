@@ -15,7 +15,7 @@
         android:id="@+id/editText_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Look for an article here"
+        android:hint="Look for an article here."
         android:paddingBottom="16dp"
         android:textSize="25sp" />
 
